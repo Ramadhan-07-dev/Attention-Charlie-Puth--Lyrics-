@@ -1,0 +1,324 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attention</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #aa46c4;
+            font-size: 2.2rem;
+        }
+
+        .lyrics-container {
+            height: 300px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+        }
+
+        .lyrics {
+            transition: transform 0.3s ease;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .lyrics-line {
+            opacity: 0.6;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .lyrics-line.active {
+            opacity: 1;
+            color: #aa46c4;
+            font-weight: bold;
+            transform: scale(1.05);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        button {
+            background: #ce51da;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(233, 69, 96, 0.3);
+        }
+
+        button:hover {
+            background: #cf77f1;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button i {
+            font-size: 1.2rem;
+        }
+
+        .song-info {
+            text-align: center;
+            margin-bottom: 20px;
+            font-style: italic;
+            color: #a8a8a8;
+        }
+    </style>
+    <link rel="icon" href="d:\fiqri\Documents\Desain_ahhl-removebg-preview.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Lirik Lagu</h1>
+        <div class="song-info">
+            <h2>Judul Lagu: Attention</h2>
+            <p>Penyanyi: Charlie Puth</p>
+        </div>
+       
+        <audio id="audio">
+            <source src="Charlie Puth - Attention (Lyrics).mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+
+        <div class="lyrics-container">
+            <div class="lyrics" id="lyrics">
+                <!-- Lirik akan diisi oleh JavaScript -->
+            </div>
+        </div>
+        <div class="controls">
+            <button id="playPauseBtn" aria-label="Play/Pause">
+                <i class="fas fa-play"></i>
+                <span>Play</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Daftar lirik lagu
+        const lyrics = [
+            "Whoa, mm",
+            "You've been running 'round, running 'round, running 'round throwing that dirt all on my name",
+            "'Cause you knew that I, knew that I, knew that I'd call you up",
+            "You've been going 'round, going 'round, going 'round every party in LA",
+            "'Cause you knew that I, knew that I, knew that I'd be at one",
+            "I know that dress is karma, perfume regret",
+            "You got me thinking 'bout when you were mine",
+            "And now I'm all up on ya, what you expect?",
+            "But you're not coming home with me tonight",
+            "You just want attention, you don't want my heart",
+            "Maybe you just hate the thought of me with someone new",
+            "Yeah, you just want attention, I knew from the start",
+            "You're just making sure I'm never gettin' over you",
+            "You've been running 'round, running 'round, running 'round throwing that dirt all on my name",
+            "'Cause you knew that I, knew that I, knew that I'd call you up",
+            "Baby, now that we're, now that we're, now that we're right here standing face to face",
+            "You already know, already know, already know that you won",
+            "I know that dress is karma, perfume regret",
+            "You got me thinking 'bout when you were mine",
+            "And now I'm all up on ya, what you expect?",
+            "But you're not coming home with me tonight",
+            "You just want attention, you don't want my heart",
+            "Maybe you just hate the thought of me with someone new",
+            "Yeah, you just want attention, I knew from the start",
+            "You're just making sure I'm never gettin' over you",
+            "What are you doin' to me, what are you doin', huh?",
+            "What are you doin' to me, what are you doin', huh?",
+            "What are you doin' to me, what are you doin', huh?",
+            "What are you doin' to me, what are you doin', huh?",
+            "I know that dress is karma, perfume regret",
+            "You got me thinking 'bout when you were mine",
+            "And now I'm all up on ya, what you expect?",
+            "But you're not coming home with me tonight",
+            "...",
+            "You just want attention, you don't want my heart",
+            "Maybe you just hate the thought of me with someone new",
+            "Yeah, you just want attention, I knew from the start",
+            "You're just making sure I'm never gettin' over you",
+            "What are you doin' to me, what are you doin', huh?",
+            "What are you doin' to me, what are you doin', huh?",
+            "What are you doin' to me, what are you doin', huh?",
+            "What are you doin' to me, what are you doin', huh?",
+    ];
+        const durations = [
+            8.50,
+            5.50, 
+            5,
+            4.5, 
+            6, 
+            4, 
+            5, 
+            5, 
+            3, 
+            5,
+            4,
+            5, 
+            6, 
+            5, 
+            5, 
+            5, 
+            5, 
+            4, 
+            5,
+            5, 
+            5, 
+            5, 
+            4, 
+            4, 
+            6, 
+            5, 
+            5, 
+            5,
+            5, 
+            4, 
+            6, 
+            4, 
+            4, 
+            2, 
+            5, 
+            5, 
+            5,
+            6, 
+            5, 
+            5, 
+            5, 
+            5
+        ];
+
+        const lyricsElement = document.getElementById('lyrics');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const audio = document.getElementById('audio');
+
+        // Render lirik awal
+        lyrics.forEach(line => {
+            const lineElement = document.createElement('div');
+            lineElement.classList.add('lyrics-line');
+            lineElement.textContent = line;
+            lyricsElement.appendChild(lineElement);
+        });
+
+        let currentLine = 0;
+        let scrollInterval;
+        let isPlaying = false;
+        const lineElements = document.querySelectorAll('.lyrics-line');
+        let lineStartTime = 0;
+        let elapsedTime = 0;
+        let lastUpdateTime = 0;
+
+        function highlightCurrentLine() {
+            // Reset semua line
+            lineElements.forEach(line => {
+                line.classList.remove('active');
+            });
+            
+            // Highlight line saat ini
+            if (currentLine < lineElements.length) {
+                lineElements[currentLine].classList.add('active');
+                
+                // Scroll ke line yang aktif
+                lineElements[currentLine].scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }
+        }
+
+        function startScrolling() {
+            if (scrollInterval) clearTimeout(scrollInterval);
+            lastUpdateTime = Date.now();
+            
+            function advanceLyric() {
+                highlightCurrentLine();
+                if (currentLine < lineElements.length - 1) {
+                    const lineDuration = durations[currentLine] * 1000;
+                    const remainingTime = lineDuration - elapsedTime;
+                    
+                    if (remainingTime <= 0) {
+                        currentLine++;
+                        elapsedTime = 0;
+                        lineStartTime = Date.now();
+                    }
+                    
+                    scrollInterval = setTimeout(() => {
+                        elapsedTime = Date.now() - lineStartTime;
+                        advanceLyric();
+                    }, Math.max(0, remainingTime));
+                } else {
+                    pauseScrolling();
+                }
+            }
+
+            lineStartTime = Date.now();
+            elapsedTime = 0;
+            advanceLyric();
+        }
+
+        function pauseScrolling() {
+            clearTimeout(scrollInterval);
+            isPlaying = false;
+            elapsedTime += Date.now() - lastUpdateTime;
+            playPauseBtn.innerHTML = '<i class="fas fa-play"></i><span>Play</span>';
+        }
+
+        function playScrolling() {
+            isPlaying = true;
+            playPauseBtn.innerHTML = '<i class="fas fa-pause"></i><span>Pause</span>';
+            startScrolling();
+        }
+
+        playPauseBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                pauseScrolling();
+                audio.pause();
+            } else {
+                playScrolling();
+                audio.play();
+            }
+        });
+
+        // Mulai dengan line pertama yang di-highlight
+        highlightCurrentLine();
+    </script>
+</body>
+</html>
